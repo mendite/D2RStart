@@ -11,8 +11,8 @@
 		<SelfContained>true</SelfContained>
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<PublishReadyToRun>true</PublishReadyToRun>
-		<Copyright>2022 Das Raike</Copyright>
-		<Version>1.0.0.0</Version>
+		<Copyright>2023 Das Raike</Copyright>
+		<Version>1.0.1.0</Version>
 	</PropertyGroup>
 
   <ItemGroup>
