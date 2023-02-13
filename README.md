@@ -10,7 +10,7 @@ https://us.forums.blizzard.com/en/d2r/t/how-to-multiple-d2r-instances-requires-t
 - Download Handle at https://learn.microsoft.com/en-us/sysinternals/downloads/handle 
 - Extract the executables from the downloaded zip archive to the D2RStart.exe directory
 - Restart D2RStart.exe
-- Create a directory for each startable game instance (minimum two)
+- Create a directory entry for each startable game instance (minimum two)
 - Save settings
 - Start BNet launcher
 - Open settings
