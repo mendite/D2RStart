@@ -4,6 +4,7 @@ The tool does the same in the background as the description for command line at 
 https://us.forums.blizzard.com/en/d2r/t/how-to-multiple-d2r-instances-requires-two-accounts/60546
 
 ## Short Help
+- Needs ".NET Desktop Runtime 6.0" (if not installed you get download link in a message box)
 - A separate license/B-Net account is required for each D2R game instance launched
 - For each D2R instance a complete copy of the game installation directory is required (you find it in D2R game settings of BNet launcher)
 - Start the tool D2RStart.exe
