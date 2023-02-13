@@ -7,12 +7,12 @@
 		<UseWPF>true</UseWPF>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<ApplicationIcon>Resources\D2Start.ico</ApplicationIcon>
-		<PublishSingleFile>true</PublishSingleFile>
+		<PublishSingleFile Condition="'$(Configuration)' == 'Release'">true</PublishSingleFile>
 		<SelfContained>true</SelfContained>
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<PublishReadyToRun>true</PublishReadyToRun>
-		<Copyright>2023 Das Raike</Copyright>
-		<Version>1.0.1.0</Version>
+		<Copyright>Copyright 2023 by Das Raike</Copyright>
+		<Version>1.0.2.0</Version>
 	</PropertyGroup>
 
   <ItemGroup>

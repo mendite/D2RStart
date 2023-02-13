@@ -171,7 +171,8 @@
                         <TextBlock Margin="0" Padding="0">
                             <TextBlock.Inlines>
                                 <Run FontSize="25">Start</Run>
-                                <Run FontSize="25" FontWeight="Bold" Foreground="Red" Text="D" /><Run FontSize="25" FontWeight="Bold" Text="II" /><Run FontSize="25">-Launcher</Run>
+                                <Run FontSize="25" FontWeight="Bold" Foreground="Red" Text="D" /><Run FontSize="25" FontWeight="Bold" Text="2" /><Run FontSize="25" FontWeight="Bold" Text="R" />
+                                <Run FontSize="25">-Launcher</Run>
                             </TextBlock.Inlines>
                         </TextBlock>
                     </StackPanel>
