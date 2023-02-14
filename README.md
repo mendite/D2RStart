@@ -3,6 +3,8 @@ D2RStart is a tool for easy starting multible installations of D2R. For technica
 The tool does the same in the background as the description for command line at the following URL - reduced to one button click. You don't need to worry about which path is already in use.
 https://us.forums.blizzard.com/en/d2r/t/how-to-multiple-d2r-instances-requires-two-accounts/60546
 
+![UI image](/Images/D2RStartUi.png)
+
 ## Short Help
 - Needs ".NET Desktop Runtime 6.0" (if not installed you get download link in a message box)
 - A separate license/B-Net account is required for each D2R game instance launched
