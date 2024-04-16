@@ -7,6 +7,8 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace D2RStart
 {
@@ -28,7 +30,7 @@ namespace D2RStart
             Process process = new Process();
             process.StartInfo.CreateNoWindow = true;
             process.StartInfo.FileName = "handle64.exe";
-            process.StartInfo.Arguments = "-p D2R.exe -a \"DiabloII Check For Other Instances\" -nobanner";
+            process.StartInfo.Arguments = "-vt -a -p D2R.exe -nobanner";
             process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardError = true;
@@ -52,8 +54,8 @@ namespace D2RStart
             if (process.ExitCode != 0)
                 throw new Exception(stdError);
 
-            //D2R.exe            pid: 21832  type: Event          75C: \Sessions\7\BaseNamedObjects\DiabloII Check For Other Instances
-            Regex regexPid = new Regex(".*pid: (?<PID>\\d+).*type: Event\\s+(?<EVENTID>[a-zA-Z0-9]+):.*");
+            //D2R.exe	7528	QUIET\mendi	0x000007F0	Event		\Sessions\1\BaseNamedObjects\DiabloII Check For Other Instances 
+            Regex regexPid = new Regex(@"(?<=D2R.exe\t)(?<PID>\d+)\t.*\t(?<EVENTID>(0x\w{8}))\tEvent\t.*DiabloII Check For Other Instances");
             Match match = regexPid.Match(stdOutput.ToString());
 
             if (!match.Success)
