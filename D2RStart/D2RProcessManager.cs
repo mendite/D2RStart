@@ -25,35 +25,62 @@ namespace D2RStart
             }
         }
 
-        private static D2RExeInfo GetD2RExeInfo()
+        private static D2RExeInfo GetD2RExeInfo(bool firstRun = true)
         {
-            Process process = new Process();
-            process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.FileName = "handle64.exe";
-            process.StartInfo.Arguments = "-vt -a -p D2R.exe -nobanner";
-            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.RedirectStandardError = true;
-            process.StartInfo.RedirectStandardOutput = true;
+            Process processListFilehandles = new Process();
+            processListFilehandles.StartInfo.CreateNoWindow = true;
+            processListFilehandles.StartInfo.FileName = "handle64.exe";
+            processListFilehandles.StartInfo.Arguments = "-vt -a -p D2R.exe -nobanner";
+            processListFilehandles.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            processListFilehandles.StartInfo.UseShellExecute = false;
+            processListFilehandles.StartInfo.RedirectStandardError = true;
+            processListFilehandles.StartInfo.RedirectStandardOutput = true;
 
             var stdOutput = new StringBuilder();
 
-            process.OutputDataReceived += (sender, args) => stdOutput.AppendLine(args.Data);
+            processListFilehandles.OutputDataReceived += (sender, args) => stdOutput.AppendLine(args.Data);
 
             string stdError = null;
 
-            process.Start();
-            process.BeginOutputReadLine();
-            stdError = process.StandardError.ReadToEnd();
-            process.WaitForExit();
+            processListFilehandles.Start();
+            processListFilehandles.BeginOutputReadLine();
+            stdError = processListFilehandles.StandardError.ReadToEnd();
+            processListFilehandles.WaitForExit();
 
             Regex regexNoHandlesFound = new Regex("No matching handles found\\..*");
             if (regexNoHandlesFound.IsMatch(stdOutput.ToString()))
                 return null;
 
-            if (process.ExitCode != 0)
-                throw new Exception(stdError);
+            if (processListFilehandles.ExitCode != 0)
+            {
+                if (string.IsNullOrEmpty(stdError) && firstRun)
+                {
+                    Process processAgreeLicense = new Process();
+                    processAgreeLicense.StartInfo.CreateNoWindow = true;
+                    processAgreeLicense.StartInfo.FileName = "handle64.exe";
+                    processAgreeLicense.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    processAgreeLicense.StartInfo.UseShellExecute = false;
+                    processAgreeLicense.Start();
+                    processAgreeLicense.WaitForExit();
 
+                    if (processAgreeLicense.ExitCode == 0)
+                    {
+                        return GetD2RExeInfo(false);
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"Declined license agreement for {processAgreeLicense.StartInfo.FileName}?");
+                    }
+                }
+                else
+                {
+                    if (string.IsNullOrWhiteSpace(stdError))
+                        throw new InvalidOperationException($"Unexpected error occured at executing {processListFilehandles.StartInfo.FileName} ({processListFilehandles.ExitCode}).");
+
+                    throw new InvalidOperationException(stdError);
+                }               
+            }
+            
             //D2R.exe	7528	QUIET\mendi	0x000007F0	Event		\Sessions\1\BaseNamedObjects\DiabloII Check For Other Instances 
             Regex regexPid = new Regex(@"(?<=D2R.exe\t)(?<PID>\d+)\t.*\t(?<EVENTID>(0x\w{8}))\tEvent\t.*DiabloII Check For Other Instances");
             Match match = regexPid.Match(stdOutput.ToString());
