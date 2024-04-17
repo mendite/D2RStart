@@ -1,3 +1,4 @@
 /D2RStart/bin
 /.vs
 /D2RStart/obj
+*.csproj.user
