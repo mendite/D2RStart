@@ -18,5 +18,14 @@
         </Grid.RowDefinitions>
 
         <local:RunD2RView />
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,3,6,0">
+            <StackPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="FontSize" Value="10" />
+                </Style>
+            </StackPanel.Resources>
+            <TextBlock x:Name="TbVersion" />
+        </StackPanel>        
     </Grid>    
 </Window>

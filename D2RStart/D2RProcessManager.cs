@@ -75,7 +75,7 @@ namespace D2RStart
                 else
                 {
                     if (string.IsNullOrWhiteSpace(stdError))
-                        throw new InvalidOperationException($"Unexpected error occured at executing {processListFilehandles.StartInfo.FileName} ({processListFilehandles.ExitCode}).");
+                        throw new InvalidOperationException($"An unexpected error with no output occured at executing {processListFilehandles.StartInfo.FileName} ({processListFilehandles.ExitCode}).");
 
                     throw new InvalidOperationException(stdError);
                 }               

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -26,6 +27,12 @@ namespace D2RStart
         {
             InitializeComponent();
             SourceInitialized += MainWindow_SourceInitialized;
+            Loaded += MainWindow_Loaded;
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            TbVersion.Text = $"{Assembly.GetAssembly(typeof(MainWindow)).GetName().Version}";
         }
 
         private void MainWindow_SourceInitialized(object sender, EventArgs e)
