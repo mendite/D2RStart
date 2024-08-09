@@ -4,9 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:D2RStart"
+             xmlns:models="clr-namespace:D2RStart.Models"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="400">
-    
+
     <UserControl.DataContext>
         <local:RunD2RViewModel />
     </UserControl.DataContext>
@@ -23,7 +24,7 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-    
+
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -45,7 +46,7 @@
                 </Button.Style>
             </Button>
 
-            <Button Command="{Binding CommandAddItem}" Content="Add path &amp; account" ToolTip="Adds one more item for D2R path">
+            <Button Command="{Binding CommandAddItem}" Content="Add path &amp; account" ToolTip="Adds one more item for D2R path and account">
                 <Button.Style>
                     <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                         <Setter Property="Visibility" Value="Collapsed" />
@@ -85,109 +86,86 @@
             </Button>
         </StackPanel>
 
-        <ListBox Grid.Row="1" ItemsSource="{Binding ConfigurationItems}" SelectedItem="{Binding SelectedConfigurationItem}">
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}">
-                    <Setter Property="Background" Value="Transparent" />
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    <Setter Property="VerticalContentAlignment" Value="Stretch" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                <Border BorderBrush="LightGray" BorderThickness="1" Margin="1" CornerRadius="6">
-                                    <ContentPresenter />
-                                </Border>                                
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>                    
-                </Style>
-            </ListBox.ItemContainerStyle>
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <ItemsControl  ItemsSource="{Binding ConfigurationItems}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="LightGray" BorderThickness="1" Margin="1" CornerRadius="3">
+                            <Grid Margin="3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
 
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid Margin="3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="auto" />
-                        </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
 
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                        </Grid.RowDefinitions>
+                                <TextBlock VerticalAlignment="Center" Margin="2,0,2,0">Path:</TextBlock>
+                                <TextBox x:Name="TxtD2RPath" Grid.Column="1" Text="{Binding D2RPath}" Style="{StaticResource StyleTextBoxEditable}" />
+                                <Button Grid.RowSpan="2" Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0"
+                                    Command="{Binding ElementName=MainGrid, Path=DataContext.CommandRemoveItem}" 
+                                    CommandParameter="{Binding}"
+                                    Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}"
+                                    ToolTip="Deletes D2R path and account item.">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding ElementName=MainGrid, Path=DataContext.EditingConfigurationIsEnabled}" Value="True" />
+                                                        <Condition Binding="{Binding ElementName=MainGrid, Path=DataContext.ConfigurationHasMoreThanTwoItems}" Value="True" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <MultiDataTrigger.Setters>
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </MultiDataTrigger.Setters>
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <Button.Content>
+                                        <TextBlock Text="X" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red" />
+                                    </Button.Content>
+                                </Button>
 
-                        <TextBlock VerticalAlignment="Center" Margin="2,0,2,0">Path:</TextBlock>
-                        <TextBox x:Name="TxtD2RPath" Grid.Column="1" Text="{Binding D2RPath}" Style="{StaticResource StyleTextBoxEditable}" />                        
-                        <Button Grid.RowSpan="2" Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0"
-        Command="{Binding ElementName=MainGrid, Path=DataContext.CommandRemoveItem}" 
-        CommandParameter="{Binding}"
-        Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}"
-        ToolTip="Deletes D2R path">
-                            <Button.Resources>
-                                <Style TargetType="Border">
-                                    <Setter Property="CornerRadius" Value="6"/>
-                                </Style>
-                            </Button.Resources>
-                            <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding ElementName=MainGrid, Path=DataContext.EditingConfigurationIsEnabled}" Value="True" />
-                                                <Condition Binding="{Binding ElementName=MainGrid, Path=DataContext.ConfigurationHasMoreThanTwoItems}" Value="True" />
-                                            </MultiDataTrigger.Conditions>
-                                            <MultiDataTrigger.Setters>
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </MultiDataTrigger.Setters>
-                                        </MultiDataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                            <Button.Content>
-                                <TextBlock Text="X" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red" />
-                            </Button.Content>
-                        </Button>
-
-                        <TextBlock Grid.Row="1" VerticalAlignment="Center" Margin="2,0,2,0">Account:</TextBlock>
-                        <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource StyleTextBoxEditable}" Text="{Binding Account, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
-                        <Button Grid.RowSpan="2" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0"
-                                ToolTip="Starts next launcher and copies account name to clipboard."
-                                Command="{Binding RelativeSource={RelativeSource AncestorType=local:RunD2RView}, Path=DataContext.CommandStartNextD2RAndCopyAccountToClipboard}"
-                                CommandParameter="{Binding Account}">
-                            <Button.Resources>
-                                <Style TargetType="Border">
-                                    <Setter Property="CornerRadius" Value="6"/>
-                                </Style>
-                            </Button.Resources>
-                            <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding ElementName=MainGrid, Path=DataContext.EditingConfigurationIsEnabled}" Value="False" />
-                                            </MultiDataTrigger.Conditions>
-                                            <MultiDataTrigger.Setters>
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </MultiDataTrigger.Setters>
-                                        </MultiDataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                            <Button.Content>
-                                <TextBlock TextAlignment="Center" FontSize="10">
-                                    <Run>Start &amp; copy</Run><LineBreak />
-                                    <Run>account to</Run><LineBreak />
-                                    <Run>clipboaed</Run>
-                                </TextBlock>
-                            </Button.Content>
-                        </Button>
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+                                <TextBlock Grid.Row="1" VerticalAlignment="Center" Margin="2,0,2,0">Account:</TextBlock>
+                                <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource StyleTextBoxEditable}" Text="{Binding Account, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                                <Button Grid.RowSpan="2" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0"
+                                    ToolTip="Starts the next launcher and copies the account to the clipboard."
+                                    Command="{Binding RelativeSource={RelativeSource AncestorType=local:RunD2RView}, Path=DataContext.CommandStartNextD2RAndCopyAccountToClipboard}"
+                                    CommandParameter="{Binding Account}">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding ElementName=MainGrid, Path=DataContext.EditingConfigurationIsEnabled}" Value="False" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <MultiDataTrigger.Setters>
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </MultiDataTrigger.Setters>
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <Button.Content>
+                                        <TextBlock TextAlignment="Center" FontSize="10">
+                            <Run>Start &amp; copy</Run><LineBreak />
+                            <Run>account to</Run><LineBreak />
+                            <Run>clipboaed</Run>
+                                        </TextBlock>
+                                    </Button.Content>
+                                </Button>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
 
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
@@ -208,7 +186,7 @@
                 </TextBlock.Style>
             </TextBlock>
 
-            <Button Grid.Column="1" Command="{Binding CommandStartNextD2RAndCopyAccountToClipboard}" Margin="6">
+            <Button Grid.Column="1" Command="{Binding CommandStartNextD2RAndCopyAccountToClipboard}" Margin="4" ToolTip="Start next launcher without copying something to clipboard.">
                 <Button.Style>
                     <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                         <Style.Triggers>
@@ -223,7 +201,9 @@
                         <TextBlock Margin="0" Padding="0">
                             <TextBlock.Inlines>
                                 <Run FontSize="25">Start</Run>
-                                <Run FontSize="25" FontWeight="Bold" Foreground="Red" Text="D" /><Run FontSize="25" FontWeight="Bold" Text="2" /><Run FontSize="25" FontWeight="Bold" Text="R" />
+                                <Run FontSize="25" FontWeight="Bold" Foreground="Red" Text="D" />
+                                <Run FontSize="25" FontWeight="Bold" Text="2" />
+                                <Run FontSize="25" FontWeight="Bold" Text="R" />
                                 <Run FontSize="25">-Launcher</Run>
                             </TextBlock.Inlines>
                         </TextBlock>

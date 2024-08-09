@@ -24,15 +24,56 @@ namespace D2RStart
     public partial class MainWindow : Window
     {
         public MainWindow()
-        {
+        {            
             InitializeComponent();
             SourceInitialized += MainWindow_SourceInitialized;
             Loaded += MainWindow_Loaded;
+            Closing += MainWindow_Closing;
+
+            if (App.Settings.WindowClosingSize.Width >= MinWidth)
+            {
+                Width = App.Settings.WindowClosingSize.Width;
+            }
+
+            if (App.Settings.WindowClosingSize.Height >= MinHeight)
+            {
+                Height = App.Settings.WindowClosingSize.Height;
+            }
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            try
+            {
+                if (WindowState == WindowState.Maximized)
+                {
+                    WindowState = WindowState.Normal;
+                }
+
+                App.Settings.WindowClosingSize.Width = Width;
+                App.Settings.WindowClosingSize.Height = Height;
+                App.Settings.Save();
+            }
+            catch { }            
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            TbVersion.Text = $"{Assembly.GetAssembly(typeof(MainWindow)).GetName().Version}";
+            try
+            {
+                TbVersion.Text = $"V{Assembly.GetAssembly(typeof(MainWindow)).GetName().Version}";
+
+                //if (App.Settings.WindowClosingSize.Width >= MinWidth)
+                //{
+                //    Width = App.Settings.WindowClosingSize.Width;
+                //}
+
+                //if (App.Settings.WindowClosingSize.Height >= MinHeight)
+                //{
+                //    Height = App.Settings.WindowClosingSize.Height;
+                //}
+            }
+            catch { }            
         }
 
         private void MainWindow_SourceInitialized(object sender, EventArgs e)

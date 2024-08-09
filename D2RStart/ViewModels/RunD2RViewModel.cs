@@ -18,10 +18,6 @@ namespace D2RStart
 {
     internal class RunD2RViewModel : NotifyPropertyChangedBase
     {
-        #region Private fields
-        private static readonly string ConfigurationFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "D2RStart\\D2RStart.config");
-        #endregion
-
         #region Constructor
         public RunD2RViewModel()
         {
@@ -113,8 +109,7 @@ namespace D2RStart
 
         private bool CanExecuteCommandRemoveItem(D2RItem item)
         {
-            return item is not null;
-            //return EditingConfigurationIsEnabled && ConfigurationItems.Count > 2 && SelectedConfigurationItem != null;
+            return true;
         }
 
         private void ExecuteCommandRemoveItem(D2RItem item)
@@ -225,12 +220,11 @@ namespace D2RStart
 
             try
             {
-                if (File.Exists(ConfigurationFile))
+                App.Settings.Items.ForEach(item => { ConfigurationItems.Add(new D2RItem() { D2RPath = item.D2RPath, Account = item.Account, D2RStatus = D2RStatus.Stopped, }); });
+                while(ConfigurationItems.Count < 2)
                 {
-                    string savedConfiguration = File.ReadAllText(ConfigurationFile, Encoding.UTF8);
-                    List<D2RItem> items = JsonSerializer.Deserialize<List<D2RItem>>(savedConfiguration);
-                    items.ForEach(item => { ConfigurationItems.Add(new D2RItem() { D2RPath = item.D2RPath, Account = item.Account, D2RStatus = D2RStatus.Stopped, }); });
-                }                
+                    ConfigurationItems.Add(new D2RItem());
+                }
             }
             catch (Exception ex)
             {
@@ -255,14 +249,14 @@ namespace D2RStart
 
         private void SaveConfiguration()
         {
-            if (ConfigurationItems.Where(item => string.IsNullOrEmpty(item.D2RPath)).Count() > 0)
-                throw new InvalidOperationException($"Can't save configuration, because one or more D2R pathes not set.");
+            App.Settings.Items.Clear();
 
-            byte[] saveFileContent = JsonSerializer.SerializeToUtf8Bytes(ConfigurationItems);
-            if (!Directory.Exists(Path.GetDirectoryName(ConfigurationFile)))
-                Directory.CreateDirectory(Path.GetDirectoryName(ConfigurationFile));
+            foreach (D2RItem item in ConfigurationItems)
+            {
+                App.Settings.Items.Add(new D2RItem() { D2RPath = item.D2RPath, Account = item.Account });
+            }
 
-            File.WriteAllBytes(ConfigurationFile, saveFileContent);
+            App.Settings.Save();
         }
 
         private string StartNextD2R()

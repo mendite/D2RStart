@@ -17,6 +17,11 @@
              Startup="Application_Startup">
     <Application.Resources>
         <Style TargetType="Button">
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="3"/>
+                </Style>
+            </Style.Resources>
             <Setter Property="Padding" Value="3" />
             <Setter Property="Margin" Value="3" />
         </Style>
