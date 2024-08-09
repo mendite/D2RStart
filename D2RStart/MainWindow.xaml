@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:D2RStart"
         mc:Ignorable="d"
         
-        Title="D2RStart" Height="350" Width="450" MinHeight="350" MinWidth="450">
+        Title="D2RStart" Height="400" Width="500" MinHeight="350" MinWidth="450">
     <Window.Resources>
         
     </Window.Resources>

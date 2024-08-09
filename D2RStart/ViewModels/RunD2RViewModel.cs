@@ -11,6 +11,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace D2RStart
@@ -29,7 +30,7 @@ namespace D2RStart
             CommandRemoveItem = new RelayCommand<D2RItem>(ExecuteCommandRemoveItem, CanExecuteCommandRemoveItem);
             CommandSaveConfiguration = new RelayCommand(ExecuteCommandSaveConfiguration, CanExecuteCommandSaveConfiguration);            
             CommandRestoreSavedConfiguration = new RelayCommand(ExecuteCommandRestoreSavedConfiguration, CanExecuteCommandRestoreSavedConfiguration);
-            CommandStartNextD2R = new RelayCommand(ExecuteCommandStartNextD2R, CanExecuteCommandStartNextD2R);
+            CommandStartNextD2RAndCopyAccountToClipboard = new RelayCommand<string>(ExecuteCommandStartNextD2RAndCopyAccountToClipboard, CanExecuteCommandStartNextD2RAndCopyAccountToClipboard);
 
             ConfigurationItems.CollectionChanged += ConfigurationItems_CollectionChanged;
 
@@ -43,7 +44,7 @@ namespace D2RStart
         public IRelayCommand CommandRemoveItem { get; }
         public IRelayCommand CommandSaveConfiguration { get; }
         public IRelayCommand CommandRestoreSavedConfiguration { get; }
-        public IRelayCommand CommandStartNextD2R { get; }
+        public IRelayCommand CommandStartNextD2RAndCopyAccountToClipboard { get; }
         #endregion
 
         #region Public properties
@@ -112,7 +113,8 @@ namespace D2RStart
 
         private bool CanExecuteCommandRemoveItem(D2RItem item)
         {
-            return EditingConfigurationIsEnabled && ConfigurationItems.Count > 2 && SelectedConfigurationItem != null;
+            return item is not null;
+            //return EditingConfigurationIsEnabled && ConfigurationItems.Count > 2 && SelectedConfigurationItem != null;
         }
 
         private void ExecuteCommandRemoveItem(D2RItem item)
@@ -167,18 +169,23 @@ namespace D2RStart
             EditingConfigurationIsEnabled = true;
         }
 
-        private bool CanExecuteCommandStartNextD2R(object obj)
+        private bool CanExecuteCommandStartNextD2RAndCopyAccountToClipboard(string account)
         {
             return !EditingConfigurationIsEnabled;
         }
 
-        private void ExecuteCommandStartNextD2R(object obj)
+        private void ExecuteCommandStartNextD2RAndCopyAccountToClipboard(string account)
         {            
             try
             {
                 string message = StartNextD2R();
                 OutputMessage = $"{message}";
                 OutputMessageIsError = false;
+
+                if (!string.IsNullOrEmpty(account)) 
+                {
+                    Clipboard.SetText(account);
+                }
             }
             catch (Exception ex)
             {
@@ -222,7 +229,7 @@ namespace D2RStart
                 {
                     string savedConfiguration = File.ReadAllText(ConfigurationFile, Encoding.UTF8);
                     List<D2RItem> items = JsonSerializer.Deserialize<List<D2RItem>>(savedConfiguration);
-                    items.ForEach(item => { ConfigurationItems.Add(new D2RItem() { D2RPath = item.D2RPath, D2RStatus = D2RStatus.Stopped, }); });
+                    items.ForEach(item => { ConfigurationItems.Add(new D2RItem() { D2RPath = item.D2RPath, Account = item.Account, D2RStatus = D2RStatus.Stopped, }); });
                 }                
             }
             catch (Exception ex)
@@ -278,7 +285,7 @@ namespace D2RStart
             CommandRemoveItem.RaiseCanExecuteChanged();
             CommandSaveConfiguration.RaiseCanExecuteChanged();
             CommandRestoreSavedConfiguration.RaiseCanExecuteChanged();
-            CommandStartNextD2R.RaiseCanExecuteChanged();
+            CommandStartNextD2RAndCopyAccountToClipboard.RaiseCanExecuteChanged();
         }
         #endregion
 

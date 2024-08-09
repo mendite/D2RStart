@@ -26,6 +26,13 @@ namespace D2RStart.Models
             set { base.OnPropertyChanged<string>(ref d2rPath, value); }
         }
 
+        private string account = string.Empty;
+        public string Account
+        {
+            get { return account; }
+            set { base.OnPropertyChanged<string>(ref account, value); }
+        }
+
         private D2RStatus d2rStatus = D2RStatus.Stopped;
         [JsonIgnore]
         public D2RStatus D2RStatus
