@@ -156,7 +156,7 @@
                                         <TextBlock TextAlignment="Center" FontSize="10">
                             <Run>Start &amp; copy</Run><LineBreak />
                             <Run>account to</Run><LineBreak />
-                            <Run>clipboaed</Run>
+                            <Run>clipboard</Run>
                                         </TextBlock>
                                     </Button.Content>
                                 </Button>
